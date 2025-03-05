@@ -23,5 +23,6 @@ public class CreateProductEndpoint : ICarterModule
         .WithSummary("Create a new product")
         .WithDescription("Create a new product in the catalog");
 
+
     }
 }
