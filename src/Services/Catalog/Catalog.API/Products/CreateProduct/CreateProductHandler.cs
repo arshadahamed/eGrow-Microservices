@@ -3,7 +3,8 @@
 public record CreateProductCommand(string Name, List<string> Category, string Description, string ImgaeFile, decimal Price)
     :ICommand<CreateProductResult>;
 public record CreateProductResult(Guid Id);
-internal class CreateProductCommandHandler : ICommandHander<CreateProductCommand, CreateProductResult>
+internal class CreateProductCommandHandler(IDocumentSession session)
+    : ICommandHander<CreateProductCommand, CreateProductResult>
 {
     public async Task<CreateProductResult> Handle(CreateProductCommand command, CancellationToken cancellationToken)
     {
@@ -17,11 +18,12 @@ internal class CreateProductCommandHandler : ICommandHander<CreateProductCommand
             Price = command.Price
         };
         //save to database
+        session.Store(product);
+        await session.SaveChangesAsync(cancellationToken);
 
-        
         //return the result
 
-        return new CreateProductResult(Guid.NewGuid() );
+        return new CreateProductResult(product.Id);
 
     }
 }
